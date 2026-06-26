@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Gấu Tuyết Học Tập</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #e0f7fa; text-align: center; padding: 50px; }
+        .card { background: white; padding: 30px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 400px; }
+        
+        .mascot { font-size: 80px; margin-bottom: 20px; display: inline-block; animation: sway 3s infinite ease-in-out; }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .btn-option { background: #2196F3; color: white; border: none; padding: 15px; margin: 10px; border-radius: 10px; cursor: pointer; border-bottom: 5px solid #0d47a1; transition: 0.1s; }
+        .btn-option:active { transform: translateY(4px); border-bottom: none; }
+        .btn-confirm { background: #4CAF50; color: white; border: none; padding: 15px 30px; border-radius: 10px; margin-top: 20px; border-bottom: 5px solid #2e7d32; cursor: pointer; font-weight: bold; }
+        .hidden { display: none; }
+        input { padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; width: 80%; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="loginScreen">
+        <div class="mascot">🐻‍❄️</div>
+        <h3 id="t1">Chào mừng bạn!</h3>
+        <input type="text" id="username" placeholder="Tên đăng nhập"><br>
+        <input type="password" id="password" placeholder="Mật khẩu"><br>
+        <button class="btn-confirm" onclick="handleAuth()">ĐĂNG NHẬP / ĐĂNG KÝ</button>
+    </div>
+
+    <div class="card hidden" id="step1">
+        <div class="mascot">🐻‍❄️</div>
+        <h3 id="t2">Bạn bao nhiêu tuổi?</h3>
+        <input type="number" id="age" placeholder="Nhập tuổi...">
+        <h3>Mức độ toán của bạn?</h3>
+        <button class="btn-option" onclick="setMath('Yếu')">Chưa giỏi</button>
+        <button class="btn-option" onclick="setMath('TB')">Trung bình</button>
+        <button class="btn-option" onclick="setMath('Giỏi')">Siêu giỏi</button>
+        <br><button class="btn-confirm" onclick="nextStep()">XÁC NHẬN</button>
+    </div>
+
+    <div class="card hidden" id="step2">
+        <div class="mascot">🐻‍❄️</div>
+        <h3 id="t3">Bạn biết mình từ đâu?</h3>
+        <button class="btn-option" onclick="setSource('TikTok')">TikTok</button>
+        <button class="btn-option" onclick="setSource('YouTube')">YouTube</button>
+        <button class="btn-option" onclick="setSource('Facebook')">Facebook</button>
+        <br><button class="btn-confirm" onclick="finish()">BẮT ĐẦU HỌC</button>
+    </div>
+
+    <script>
+        let userData = {};
+
+        // Hàm chạy chữ
+        function typeEffect(id, text, speed = 40) {
+            let el = document.getElementById(id);
+            el.innerHTML = "";
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                }
+            }
+            typing();
+        }
+
+        window.onload = () => typeEffect('t1', "Chào mừng bạn!");
+
+        function handleAuth() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(user && pass) {
+                localStorage.setItem('currentUser', user);
+                if(localStorage.getItem(user + '_surveyDone')) {
+                    alert("Chào mừng trở lại " + user + "!");
+                } else {
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('step1').classList.remove('hidden');
+                    typeEffect('t2', "Bạn bao nhiêu tuổi?");
+                }
+            } else { alert("Vui lòng nhập tên và mật khẩu!"); }
+        }
+
+        function setMath(m) { userData.math = m; }
+        function setSource(s) { userData.source = s; }
+        
+        function nextStep() {
+            userData.age = document.getElementById('age').value;
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+            typeEffect('t3', "Bạn biết mình từ đâu?");
+        }
+        
+        function finish() {
+            const user = localStorage.getItem('currentUser');
+            localStorage.setItem(user + '_surveyDone', 'true');
+            alert("Thông tin đã được lưu. Bắt đầu học nhé!");
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
+
